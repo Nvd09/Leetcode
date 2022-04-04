@@ -51,3 +51,59 @@ class Solution {
         return maxLength;
     }
 }
+
+/*
+Question# 424 You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. 
+You can perform this operation at most k times.
+Return the length of the longest substring containing the same letter you can get after performing the above operations.
+*/
+
+class Solution {
+    public int characterReplacement(String s, int k) {
+        //Two ways to solve this problem either with Array or with HashMap
+      /*  
+         Use the dynamic sliding window algorithm
+        Map<Character, Integer> freqMap = new HashMap<>();
+        int begin = 0;
+        int charReplacement = 0;
+        int maxRepeatingChar = 0;
+        
+        for(int end=0; end<s.length(); end++){
+            char curChar = s.charAt(end);
+            freqMap.put(curChar, freqMap.getOrDefault(curChar, 0)+1);
+            maxRepeatingChar = Math.max(maxRepeatingChar, freqMap.get(curChar));
+            //Check window length - maxRepating because AABAB - AAA > 1
+            if(end - begin + 1 - maxRepeatingChar > k ){
+                //Need to remove the first char of the string from the map
+                char firstChar = s.charAt(begin);
+                freqMap.put(firstChar, freqMap.get(firstChar)-1);
+                begin++;
+            }
+            charReplacement = Math.max(charReplacement, end-begin+1);
+        }
+        return charReplacement;
+        */
+        
+        //Create a dynamic sliding window
+        //we can use int array of 26 to keep track of the characterss
+        //find the max repeating char on the current char
+        // check if window length- maxrepating char > k
+        // We reduce the window
+        int maxLength = 0;
+        int maxRepeatingChar = 0;
+        int start = 0;
+        int [] freq = new int[26];
+        for(int end = 0; end<s.length(); end++){
+            char curChar = s.charAt(end);
+            freq[curChar-'A']++;  //Saving the number of times each char shows up
+            maxRepeatingChar = Math.max(maxRepeatingChar, freq[curChar-'A']);
+            if(end-start+1 - maxRepeatingChar > k){
+                char startChar = s.charAt(start);
+                freq[startChar - 'A']--;
+                start++;
+            }
+            maxLength= Math.max(maxLength, end-start+1);
+        }
+        return maxLength;
+    }
+}
